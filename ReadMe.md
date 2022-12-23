@@ -49,7 +49,7 @@ From: centos:centos7.6.1810
 Pre-clustered ARG database is only available for sequence identity 90%.
 Download and index the pre-clustered database.
 ```
-for i in {arg-annot,resfinder,card,groot-db,groot-core-db}; do groot get -d $i -o databases; groot index -m ./databases/$i".90" -i ./databases/$i".index";done; 
+for i in {arg-annot,resfinder,card,groot-db,groot-core-db}; do groot get -d $i -o databases; groot index -m ./databases/$i".90" -i ./databases/$i".index" -w 100;done; 
 ```
 ## Profile ARG
 Use runGroot.sh script to do resitome profiling in metagenome sample.

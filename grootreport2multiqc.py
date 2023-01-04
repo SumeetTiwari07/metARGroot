@@ -97,23 +97,25 @@ def crearteArgdescription(summary):
     arg_dicts['TotalARGCount'] = "Total number of ARGs detected in the sample"
     return arg_dicts
 
-def generateMultiqc(data, name, argdicts):
+def generateMultiqc(data, name, argdicts, N):
     '''
     Convert final report to MultiQC format.
     '''
     with open(name, "w") as f1:
-        f1.write(f"# plot_type: 'table'\n")
-        f1.write(f"# section_name: 'ARG detection'\n")
-        f1.write(f"# description: 'Detection of Antibiotic Resistance Genes using Groot'\n")
-        f1.write(f"# pconfig: \n#\tnamespace: 'Cust Data'\n")
-        f1.write(f"# headers:\n")
+        f1.write("# plot_type: \'table\'\n")
+        f1.write("# section_name: \'ARG detection\'\n")
+        f1.write(f"# description: \'Summary top {N} AMR genes found\'\n")
+        f1.write("# pconfig:\n")
+        f1.write("#     namespace: \'Cust Data\'\n")
+        f1.write("# headers:\n")
         # Adding colname, tittle, description and format for each column in multiqc report
         x = ["Sample"]
         for idx, val in enumerate(list(data.columns)[1:]):
-            f1.write(f"#\tcol{idx+1}:\n")
-            f1.write(f"#\t\ttitle: '{idx+1}. {val}'\n")
-            f1.write(f"#\t\tdescription: '{argdicts[val]}'\n")
-            f1.write(f"#\t\tformat: "'{:,.0f}'"\n")
+            f1.write(f"#     col{idx+1}:\n")
+            f1.write(f"#        title: \'{val}\'\n")
+            f1.write(f"#        description: \'{argdicts[val]}\'\n")
+            f1.write("#        format: \'{:,.0f}\'\n")
+            f1.write(f"#        placement: {100*(idx+1)}\n") # ordering columns
             x.append(f"col{idx+1}")
         
         f1.write("\t".join(x))
@@ -167,7 +169,7 @@ if __name__ == "__main__":
     print(f"Preparing MultiQC report: {args.output}")
     # Create ARG description Dictionary
     argdicts = crearteArgdescription(summary)
-    generateMultiqc(final_report, args.output, argdicts)
+    generateMultiqc(final_report, args.output, argdicts, args.topNarg)
     
     # Write all the output
     print("Writing all the outputs")

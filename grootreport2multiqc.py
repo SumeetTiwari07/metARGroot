@@ -14,7 +14,7 @@ Outputs:
 import argparse
 import os
 import pandas as pd
-from itertools import product
+import zipfile
 
 # Initiating data frames.
 df1=pd.DataFrame()
@@ -131,15 +131,18 @@ def writeOuput(summary, stats, final_report):
     Output files
     '''
     # Merged groot report
-    summary.to_csv("groot_summary.tsv", sep="\t", index=False) # Merged report.
+    summary.to_csv("groot_summary.tsv.gz", sep="\t", index=False, compression="gzip") # Merged report.
     
     # Stats file
     stats = stats.drop(columns={'TotalReadCount', 'TotalARGCount'})
     stats = stats.T
-    stats.to_csv("arg_prs_abs.tsv", sep="\t", index=True, header=None) # ARG presene absence matrix.
+    stats.to_csv("arg_prs_abs.tsv.gz", sep="\t", index=True, header=None, compression="gzip") # ARG presene absence matrix.
     
     #Raw final report
-    final_report.to_csv("final_report.tsv", index=False, sep="\t")
+    final_report.to_csv("final_report.tsv.gz", index=False, sep="\t", compression="gzip")
+
+
+
     return
 
 if __name__ == "__main__":

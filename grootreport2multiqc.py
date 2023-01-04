@@ -108,16 +108,16 @@ def generateMultiqc(data, name, argdicts, N):
         f1.write("# section_name: \'ARG detection\'\n")
         f1.write(f"# description: \'Summary top {N} AMR genes found\'\n")
         f1.write("# pconfig:\n")
-        f1.write("#     namespace: \'Cust Data\'\n")
+        f1.write("#   namespace: \'Custom Data\'\n")
         f1.write("# headers:\n")
         # Adding colname, tittle, description and format for each column in multiqc report
         x = ["Sample"]
         for idx, val in enumerate(list(data.columns)[1:]):
-            f1.write(f"#     col{idx+1}:\n")
-            f1.write(f"#        title: \'{val}\'\n")
-            f1.write(f"#        description: \'{argdicts[val]}\'\n")
-            f1.write("#        format: \'{:,.0f}\'\n")
-            f1.write(f"#        placement: {100*(idx+1)}\n") # ordering columns
+            f1.write(f"#   col{idx+1}:\n")
+            f1.write(f"#     title: \'{val}\'\n")
+            f1.write(f"#     description: \'{argdicts[val]}\'\n")
+            f1.write("#     format: \'{:,.0f}\'\n")
+            f1.write(f"#     placement: {100*(idx+1)}\n") # ordering columns
             x.append(f"col{idx+1}")
         
         f1.write("\t".join(x))

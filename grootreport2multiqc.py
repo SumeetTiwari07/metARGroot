@@ -93,7 +93,7 @@ def crearteArgdescription(summary):
     arg_dicts = zip(summary.GeneSymbol,summary.ARG)
     arg_dicts = list(arg_dicts)
     arg_dicts = dict(arg_dicts)
-    arg_dicts['TotalReadCount'] = "Total reads mapped to ARGs within the sample"
+    #arg_dicts['TotalReadCount'] = "Total reads mapped to ARGs within the sample"
     arg_dicts['TotalARGCount'] = "Total number of ARGs detected in the sample"
     return arg_dicts
 
@@ -101,6 +101,8 @@ def generateMultiqc(data, name, argdicts, N):
     '''
     Convert final report to MultiQC format.
     '''
+    data = data.drop(columns={'TotalReadCount'}) # Drop column
+
     with open(name, "w") as f1:
         f1.write("# plot_type: \'table\'\n")
         f1.write("# section_name: \'ARG detection\'\n")
@@ -128,8 +130,15 @@ def writeOuput(summary, stats, final_report):
     '''
     Output files
     '''
+    # Merged groot report
     summary.to_csv("groot_summary.tsv", sep="\t", index=False) # Merged report.
-    stats.to_csv("arg_prs_abs.tsv", sep="\t", index=True) # ARG presene absence matrix.
+    
+    # Stats file
+    stats = stats.drop(columns={'TotalReadCount', 'TotalARGCount'})
+    stats = stats.T
+    stats.to_csv("arg_prs_abs.tsv", sep="\t", index=True, header=None) # ARG presene absence matrix.
+    
+    #Raw final report
     final_report.to_csv("final_report.tsv", index=False, sep="\t")
     return
 

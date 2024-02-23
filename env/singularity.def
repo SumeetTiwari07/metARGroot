@@ -1,0 +1,26 @@
+Bootstrap: docker
+From: mambaorg/micromamba:latest
+
+%setup
+    touch /etc/env.yaml
+
+%files
+    ./env.yaml /etc/env.yaml
+
+
+%post
+    echo  "[1] Create environment"
+    micromamba create --yes -p /opt/conda/envs/package_env/
+
+    echo  "[3] Install package"
+    micromamba install --yes --prefix /opt/conda/envs/package_env/ -c conda-forge -c bioconda -c defaults --file /etc/env.yaml
+    
+    echo  "[4] Clean environment"
+    micromamba clean --all --yes
+    
+%environment
+    export PATH=/opt/conda/envs/package_env/bin:$PATH
+
+%labels
+    Author: Sumeet Tiwari
+    Version: v0.1.0

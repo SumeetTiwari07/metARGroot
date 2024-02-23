@@ -33,7 +33,7 @@ sh runGroot.sh -f R1.fq.gz -r R2.fq.gz -d card.90.index -t 30 -p 0.97 >arg2.txt
 ```
 
 ## Summarizing Groot reports
-The Groot reports of samples in a single run/batch can be summarized using the script grootreport2multiqc.py. The script will generate 4 output files. At the same time, the main output is in MultiQC table format.
+The Groot reports of samples in a single run/batch can be summarized using the script `grootreport2multiqc.py`. The script will generate 4 output files. At the same time, the main output is in MultiQC table format.
 
 The script will estimate the total reads mapped to ARGs per sample, the total number of ARGs detected per sample and the top N ARGs within a batch/run.
 

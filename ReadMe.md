@@ -17,7 +17,7 @@ sudo singularity build metARGRoot__v0.1.0.simg ./env/singularity.def
 ## How to run metARGroot
 Consists of two modes:
 ```
-sh run_metaARGroot.sh -h
+sh run_metARGroot.sh -h
 
 Available modes:
  * create_db: Build a new database from a sequence file

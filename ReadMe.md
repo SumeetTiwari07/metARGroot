@@ -11,7 +11,7 @@ micromamba create -n metARGroot -f ./envs/env.yaml
 ## Creating singularity image
 To create a singularity image with `./env/singularity.def`:
 ```
-sudo singularity build metaARGRoot__v0.1.0.simg ./env/singularity.def
+sudo singularity build metARGRoot__v0.1.0.simg ./env/singularity.def
 ```
 
 ## How to run metARGroot

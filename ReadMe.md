@@ -1,11 +1,12 @@
 # ARG detection using GROOT
 
-[GROOT](https://github.com/will-rowe/groot) (**G**raphing **R**esistance **O**ut **O**f me**T**agenomes) detect the ARGs in metagenomic samples. 
+[GROOT](https://github.com/will-rowe/groot) (**G**raphing **R**esistance **O**ut **O**f me**T**agenomes) detect the ARGs in metagenomic samples. Here, we build a wrapper around Groot to run the whole pipeline in one go (using paired-end data) and extend to use a custom AMR genes database (in fasta format). Later summarize the ARGs profile from multisample with `report2multiqc.py`.
+
 
 ## Installation
-Use Conda:
+Use Micromamba [(installation)](https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html):
 ```
-conda install -c bioconda groot=1.1.2
+micromamba create -n metARGroot -f ./envs/env.yaml
 ```
 ## Creating singularity image
 To create a singularity image with `./env/singularity.def`:
@@ -13,23 +14,42 @@ To create a singularity image with `./env/singularity.def`:
 sudo singularity build metaARGRoot__v0.1.0.simg ./env/singularity.def
 ```
 
-## ARG Databases
-### Get a pre-clustered ARG database
-The pre-clustered ARG database is only available for sequence identity 90%.
-Download and index the pre-clustered database.
+## How to run metARGroot
+Consists of two modes:
 ```
-for i in {arg-annot,resfinder,card,groot-db,groot-core-db}; do groot get -d $i -o databases; groot index -m ./databases/$i".90" -i ./databases/$i".index" -w 100;done;
+sh run_metaARGroot.sh -h
 
-Note: -w = the read-length of the dataset 
+Available modes:
+ * create_db: Build a new database from a sequence file
+ * predictARG: Predict the ARGs
+For more information, run runGroot.sh -m <mode> -h
 ```
-## Profile ARG
-Use runGroot.sh script to do resitome profiling in the metagenome sample.
+## Build AMR database:
+To build an AMR database use  mode (-m) **create_db**. Either use already clustered AMR databases or provide a custom AMR genes file in fasta format.
+This will provide a clustered-database.
 ```
-sh runGroot.sh -h
-script usage: $0 [-f fwd-reads] [-r rev-reads] [-d indexDB] [-t threads] [-p covCutoff (0.97)]
+sh run_metARGroot.sh -h
 
-## Run Groot
-sh runGroot.sh -f R1.fq.gz -r R2.fq.gz -d card.90.index -t 30 -p 0.97 >arg2.txt
+Usage: run_metARGroot.sh -m create_db -s DB_SEQ
+    -m mode      Operation mode: create_db
+    -s DB_SEQ    Build database from sequence file 
+                 (OR)
+    -d DB_NAME   Download pre-clustered database
+Available database names (-d): arg-annot|resfinder|card|groot-db|groot-core-db
+```
+## Predict ARGs:
+To predict the ARGs by using the database built in above use the mode (-m) **predictARG**.
+```
+sh run_metARGroot.sh -m predictARG -h
+
+Usage: run_metARGroot.sh -m predictARG [-f fwd_reads] [-r rev_reads] [-p db_path] [-t threads] [-c covCutoff] [-o output]
+    -m mode      Operation mode: predictARG
+    -f FWD_READS Forward reads file (required)
+    -r REV_READS Reverse reads file (required)
+    -p DB_PATH   Path to indexed or clustered-MSA database (required)
+    -t THREADS   Number of threads
+    -c CovCutoff Coverage cutoff (default: 0.95)
+    -o OUTPUT    Output file name
 ```
 
 ## Summarizing Groot reports
@@ -38,9 +58,9 @@ The Groot reports of samples in a single run/batch can be summarized using the s
 The script will estimate the total reads mapped to ARGs per sample, the total number of ARGs detected per sample and the top N ARGs within a batch/run.
 
 ```
-python3 grootreport2multiqc.py --help
+python3 report2multiqc.py --help
 
-usage: grootreport2multiqc.py [-h] [-i GROOT_REPORT [GROOT_REPORT ...]] [-s REPORT_SUFFIX] [-t TOPNARG] [-o OUTPUT]
+usage: report2multiqc.py [-h] [-i GROOT_REPORT [GROOT_REPORT ...]] [-s REPORT_SUFFIX] [-t TOPNARG] [-o OUTPUT]
 
 Generate a MultiQC table
 
